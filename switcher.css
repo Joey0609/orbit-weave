@@ -1,0 +1,82 @@
+/* Adapted from smooth-option-switcher: nested expansion and a persistent left-moving indicator.
+   Project colors, typography and outer spring dragging are retained. */
+.tabs{--switch-ease:cubic-bezier(.34,.96,.6,.99)}
+.tabs-track{align-items:stretch}
+.switch-radio{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+.tabs .tab{display:block;position:relative;min-height:54px;padding:0;overflow:visible;line-height:1.3;touch-action:pan-y}
+.tabs .tab .primary-hit{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:inherit;transition:opacity .3s var(--switch-ease),transform .3s var(--switch-ease)}
+.tabs .tab .family-name{font-size:13px;margin:0;opacity:1;white-space:normal;text-align:center;padding:0 3px}
+.tabs .tab:has(.incl-slider) .primary-hit{align-items:flex-start;padding-top:9px}
+.tabs .tab:has(.incl-slider)[data-selected=true] .primary-hit{opacity:0;transform:translateY(10px) scale(.7);z-index:0;pointer-events:none}
+.tabs .family-caption{position:absolute;inset:3px 0 auto;text-align:center;font-size:9px;line-height:12px;opacity:0;margin:0;pointer-events:none;transition:opacity .3s var(--switch-ease);color:var(--muted)}
+.tabs .tab[data-selected=true] .family-caption{opacity:1}
+.tabs .family-note{position:absolute;bottom:6px;left:0;right:0;font-size:9px;text-align:center;margin:0;pointer-events:none}
+.tabs .tab:has(.family-note) .primary-hit{padding-bottom:9px}
+.tabs .incl-slider{position:absolute;z-index:2;display:flex;align-items:center;justify-content:center;width:100%;height:100%;top:66%;left:50%;transform:translate(-50%,-50%) scale(.6);gap:8px;pointer-events:none;border-radius:9px;transition:top .5s var(--switch-ease),left .5s var(--switch-ease),transform .5s var(--switch-ease),gap .5s var(--switch-ease);touch-action:pan-y;cursor:grab}
+.tabs .tab[data-selected=true] .incl-slider{top:0;left:0;transform:translate(0,0) scale(1);gap:0;padding:14px 4px 0;pointer-events:auto}
+.tabs .incl-slider label{position:relative;z-index:1;display:flex;flex:1;height:100%;align-items:center;justify-content:center;margin:0;color:var(--muted);font-size:12px;cursor:grab;transition:color .5s var(--switch-ease);border-radius:7px}
+.tabs .menu-dot{flex:none;font-size:12px;margin:0;opacity:.8;max-width:8px;overflow:hidden;transition:max-width .5s var(--switch-ease),opacity .5s var(--switch-ease)}
+.tabs .tab[data-selected=true] .menu-dot{max-width:0;opacity:0}
+.tabs .menu-indicator{position:absolute;z-index:0;top:16px;left:4px;width:calc((100% - 8px)/2);height:calc(100% - 18px);margin:0;background:#e6eefb;border-radius:7px;opacity:0;transition:left .5s var(--switch-ease),opacity .3s var(--switch-ease);pointer-events:none;box-shadow:0 1px 3px #28446709}
+.tabs .tab[data-selected=true] .menu-indicator{opacity:1}
+.tabs #gw-incl-50:checked ~ .gw-menu .menu-indicator{left:50%}
+.tabs #gw-incl-86:checked ~ .gw-menu label[for=gw-incl-86],.tabs #gw-incl-50:checked ~ .gw-menu label[for=gw-incl-50]{color:var(--blue)}
+.tabs .gw-menu.dragging .menu-indicator{transition:none}
+.tabs .tab[data-selected=false] .secondary-radio{display:none}
+.tabs .tab:has(.secondary-radio:focus-visible),.tabs .sl-menu:has(input:focus-visible){outline:2px solid #8ab0ee;outline-offset:1px;border-radius:9px}
+.tabs #constellation-gw:focus-visible ~ .tabs-track [data-family=gw],.tabs #constellation-qf:focus-visible ~ .tabs-track [data-family=qf],.tabs #constellation-ow:focus-visible ~ .tabs-track [data-family=ow],.tabs #constellation-sl:focus-visible ~ .tabs-track [data-family=sl],.tabs #constellation-am:focus-visible ~ .tabs-track [data-family=am],.tabs #constellation-gs:focus-visible ~ .tabs-track [data-family=gs]{outline:2px solid #8ab0ee;outline-offset:1px;border-radius:9px}
+@media(max-width:700px){.tabs .tab{min-height:52px}.tabs .tab .family-name{font-size:10px}.tabs .incl-slider label{font-size:11px}.tabs .family-caption{font-size:8px}.tabs .range-indicator{font-size:10px}.tabs .family-note{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.tabs *{transition:none!important}}
+
+/* Fixed inner inset: indicator margin must not inherit the generic tab span margin. */
+.tabs .sl-menu .menu-indicator{width:calc((100% - 8px)/4)}
+.tabs .sl-menu label{font-size:11px;min-width:0;white-space:nowrap}
+.tabs .incl-slider.dragging .menu-indicator{transition:none}
+.tabs #sl-incl-43:checked ~ .sl-menu .menu-indicator{left:4px}
+.tabs #sl-incl-53:checked ~ .sl-menu .menu-indicator{left:calc(4px + (100% - 8px)/4)}
+.tabs #sl-incl-70:checked ~ .sl-menu .menu-indicator{left:calc(4px + (100% - 8px)/2)}
+.tabs #sl-incl-97:checked ~ .sl-menu .menu-indicator{left:calc(4px + (100% - 8px)*3/4)}
+.tabs #sl-incl-43:checked ~ .sl-menu label[for=sl-incl-43],.tabs #sl-incl-53:checked ~ .sl-menu label[for=sl-incl-53],.tabs #sl-incl-70:checked ~ .sl-menu label[for=sl-incl-70],.tabs #sl-incl-97:checked ~ .sl-menu label[for=sl-incl-97]{color:var(--blue)}
+@media(max-width:700px){.tabs-track{transition:grid-template-columns .3s var(--switch-ease)}.tabs-track:has(.tab[data-family=sl][data-selected=true]){grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,2fr) repeat(2,minmax(0,1fr))}.tabs .sl-menu label{font-size:9px}}
+
+/* 父级手势途经星座时只呈现预览，松手后才展开子选项。 */
+.tabs.parent-drag .tab:has(.incl-slider)[data-selected=true] .primary-hit{opacity:1;transform:none;z-index:4}
+.tabs.parent-drag .tab[data-selected=true] .family-caption{opacity:0}
+.tabs.parent-drag .tab[data-selected=true] .incl-slider{top:66%;left:50%;transform:translate(-50%,-50%) scale(.6);gap:8px;padding:0;pointer-events:none}
+.tabs.parent-drag .tab[data-selected=true] .menu-indicator{opacity:0}
+.tabs.parent-drag .tab[data-selected=true] .menu-dot{max-width:8px;opacity:.8}
+
+/* 子级与父级共用同一弹簧，CSS 只负责展开，避免两套位移动画叠加。 */
+.tabs .menu-indicator.spring-indicator{transition:opacity .3s var(--switch-ease)}
+
+/* 标题始终使用同一个文字节点，移动缩小到子级标题位，不做双文字替换。 */
+.tabs{--angle-size:11px;--label-motion:.45s var(--switch-ease)}
+.tabs .tab .primary-hit{align-items:flex-start;padding:11px 0 0;opacity:1;transform:none;transition:none}
+.tabs .tab:has(.incl-slider) .primary-hit{align-items:flex-start;padding-top:11px}
+.tabs .tab .family-name{display:inline-block;transform:translateY(0) scale(1);transform-origin:center top;transition:transform var(--label-motion),color var(--label-motion);line-height:16px}
+.tabs .tab:has(.incl-slider)[data-selected=true] .primary-hit{opacity:1;transform:none;z-index:3;pointer-events:none}
+.tabs .tab:has(.incl-slider)[data-selected=true] .family-name{transform:translateY(-7px) scale(.85)}
+.tabs .family-caption{display:none}
+/* 全部角度共享字号、行高和中心线，不再通过 scale 缩小预览文字。 */
+.tabs .incl-slider{top:0;left:0;transform:none;width:100%;height:100%;gap:0;padding:25px 4px 3px;transition:padding .45s var(--switch-ease);pointer-events:none}
+.tabs .tab[data-selected=true] .incl-slider{top:0;left:0;transform:none;gap:0;padding:16px 4px 2px;pointer-events:auto}
+.tabs .incl-slider label,.tabs .sl-menu label{font-size:var(--angle-size);line-height:14px;min-width:0;white-space:nowrap}
+.tabs .menu-dot{display:none}
+.tabs .family-note{top:25px;bottom:3px;display:flex;align-items:center;justify-content:center;font-size:var(--angle-size);line-height:14px;opacity:1}
+.tabs .tab:has(.family-note) .primary-hit{padding-bottom:0}
+.tabs.parent-drag .tab:has(.incl-slider)[data-selected=true] .primary-hit{opacity:1;transform:none}
+.tabs.parent-drag .tab:has(.incl-slider)[data-selected=true] .family-name{transform:translateY(0) scale(1)}
+.tabs.parent-drag .tab[data-selected=true] .incl-slider{top:0;left:0;transform:none;gap:0;padding:25px 4px 3px;pointer-events:none}
+@media(max-width:700px){.tabs{--angle-size:9px}.tabs .tab .family-name{line-height:14px}.tabs .incl-slider label,.tabs .sl-menu label,.tabs .family-note{font-size:var(--angle-size)}}
+
+/* 内部选择区压低，标题保留独立空间；抓取光标与父级一致。 */
+.tabs .incl-slider,.tabs .incl-slider label{cursor:grab}
+.tabs.dragging .incl-slider,.tabs.dragging .incl-slider label{cursor:grabbing}
+.tabs .tab:has(.incl-slider)[data-selected=true] .family-name{transform:translateY(-4px) scale(.85)}
+.tabs .tab[data-selected=true] .incl-slider{padding:25px 4px 3px}
+.tabs .menu-indicator{top:26px;height:calc(100% - 29px)}
+.tabs.parent-drag .tab:has(.incl-slider)[data-selected=true] .family-name{transform:translateY(0) scale(1)}
+
+/* 无倾角副标题的名称上下居中，有副标题则沿用统一两行。 */
+.tabs .tab:not(:has(.incl-slider,.family-note)) .primary-hit{align-items:center;padding:0}
+.tabs .tab:has(.family-note) .primary-hit{align-items:flex-start;padding:11px 0 0}

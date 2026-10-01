@@ -1,0 +1,26 @@
+# 仓库根目录就是 raan_explorer；仅提交网页、运行数据和部署配置。
+/*
+!/.gitignore
+!/.nojekyll
+!/index.html
+!/switcher.css
+!/README.md
+!/start.cmd
+!/history/
+!/.github/
+
+# 历史目录仅保留网页实际使用的清单与压缩数据。
+/history/**
+!/history/**/
+!/history/manifest.json
+!/history/**/*.json.gz
+
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+*.tmp
+*.log
+*.bak
+_site/
